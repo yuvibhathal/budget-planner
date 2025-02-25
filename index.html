@@ -3,105 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Planner</title>
+    <title>Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
-    <script defer src="firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
 </head>
 <body>
     <header>
-        <h1>Budget Planner</h1>
+        <h1>Budget Tracker</h1>
         <p id="user-email">Not logged in</p>
         <button id="logout-btn">Logout</button>
     </header>
-    
-    <section id="signup">
-        <h2>Sign Up</h2>
-        <input type="email" id="signup-email" placeholder="Email">
-        <input type="password" id="signup-password" placeholder="Password">
-        <button id="signup-btn">Sign Up</button>
-    </section>
 
-    <section id="login">
-        <h2>Login</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <button id="login-btn">Login</button>
-    </section>
-    
-    <section id="biometric-login">
-        <h2>Biometric Authentication</h2>
-        <button id="biometric-auth">Use Biometric Login</button>
-    </section>
-    
-    <section id="budget-overview">
-        <h2>Budget Overview</h2>
-        <p>Balance: <span id="balance-value">$0</span></p>
-        <p>Income: <span id="addmoney">$0</span></p>
-        <p>Expenses: <span id="submoney">$0</span></p>
-    </section>
-    
-    <section id="add-transactions">
-        <h2>Add Income</h2>
-        <input type="text" id="income-text" placeholder="Income Title">
-        <input type="number" id="income-amount" placeholder="Income Amount">
-        <button id="btn-income">Add Income</button>
+    <main>
+        <!-- Authentication Section -->
+        <section id="authentication">
+            <article id="signup">
+                <h2>Sign Up</h2>
+                <input type="email" id="signup-email" placeholder="Enter your email">
+                <input type="password" id="signup-password" placeholder="Create a password">
+                <button id="signup-btn">Sign Up</button>
+            </article>
 
-        <h2>Add Expense</h2>
-        <input type="text" id="expenses-text" placeholder="Expense Title">
-        <input type="number" id="expenses-amount" placeholder="Expense Amount">
-        <button id="btn-expenses">Add Expense</button>
-    </section>
-    
-    <section id="transactions-list">
-        <h2>Transaction History</h2>
-        <h3>Income</h3>
-        <ul id="income-list"></ul>
-        <h3>Expenses</h3>
-        <ul id="expenses-list"></ul>
-    </section>
-    
-    <section id="analytics">
-        <h2>Expense Breakdown</h2>
-        <canvas id="expenses-chart"></canvas>
-    </section>
-    
-    <section id="features">
-        <h2>Additional Features</h2>
-        <button id="pdf-btn">Download Report</button>
-        <button id="chatbot-btn">AI Chatbot</button>
-        
-        <div id="chatbot-container">
-            <h3>Chatbot</h3>
-            <div id="chatbox">
-                <p id="chat-response">Ask me anything!</p>
+            <article id="login">
+                <h2>Login</h2>
+                <input type="email" id="login-email" placeholder="Enter your email">
+                <input type="password" id="login-password" placeholder="Enter your password">
+                <button id="login-btn">Login</button>
+            </article>
+        </section>
+
+        <!-- Budget Overview -->
+        <section id="budget-overview">
+            <h2>Budget Overview</h2>
+            <div class="values">
+                <p>Balance: <span id="balance-value">$0</span></p>
+                <p>Income: <span id="addmoney">$0</span></p>
+                <p>Expenses: <span id="submoney">$0</span></p>
             </div>
-            <input type="text" id="chat-input" placeholder="Type your question...">
-            <button id="send-chat">Send</button>
-        </div>
-    </section>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "your key",
-          authDomain: "budget-planner-dc66b.firebaseapp.com",
-          projectId: "budget-planner-dc66b",
-          storageBucket: "budget-planner-dc66b.firebasestorage.app",
-          messagingSenderId: "400787576701",
-          appId: "1:400787576701:web:b8aad3bdb88e97bc035e14",
-          measurementId: "G-HNVRPQXLZB"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-      </script>
+        </section>
+
+        <!-- Add Transactions -->
+        <section id="add-transactions">
+            <h2>Add Income</h2>
+            <input type="text" id="income-text" placeholder="Income source (e.g., Salary)">
+            <input type="number" id="income-amount" placeholder="Amount (e.g., 1000)">
+            <button id="btn-income">Add Income</button>
+
+            <h2>Add Expense</h2>
+            <input type="text" id="expenses-text" placeholder="Expense category (e.g., Groceries)">
+            <input type="number" id="expenses-amount" placeholder="Amount (e.g., 50)">
+            <button id="btn-expenses">Add Expense</button>
+        </section>
+
+        <!-- Transaction History -->
+        <section id="transactions-list">
+            <h2>Transaction History</h2>
+            <div class="lists">
+                <h3>Income</h3>
+                <ul id="income-list"></ul>
+                <h3>Expenses</h3>
+                <ul id="expenses-list"></ul>
+            </div>
+        </section>
+
+        <!-- Analytics -->
+        <section id="analytics">
+            <h2>Expense Breakdown</h2>
+            <canvas id="expenses-chart"></canvas>
+        </section>
+
+        <!-- Additional Features -->
+        <section id="features">
+            <h2>Additional Features</h2>
+            <button id="pdf-btn">Download Report</button>
+            <button id="chatbot-btn">AI Chatbot</button>
+
+            <div id="chatbot-container">
+                <h3>Chatbot</h3>
+                <div id="chatbox">
+                    <p id="chat-response">Ask me anything!</p>
+                </div>
+                <input type="text" id="chat-input" placeholder="Type your question...">
+                <button id="send-chat">Send</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Budget Tracker. All rights reserved.</p>
+    </footer>
 </body>
 </html>

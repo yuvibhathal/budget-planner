@@ -19,23 +19,42 @@ const loginBtn = document.getElementById('login-btn');
 const chatInput = document.getElementById('chat-input');
 const chatBtn = document.getElementById('send-chat');
 const chatResponse = document.getElementById('chat-response');
-const chatChart = document.getElementById('expense-chart'); // Ensure you have a <canvas> with this ID
+const chatChart = document.getElementById('expenses-chart'); // Ensure this matches your <canvas> ID
 
 // Variables
 let transactions = [];
 let totalIncome = 0;
 let totalExpenses = 0;
 let expenseCategories = {}; // Stores expenses by category
+let expenseChart = null; // Holds the Chart.js instance
+
+// Initialize Firebase (Add your Firebase config here)
+// import { initializeApp } from "firebase/app";
+// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+// import { getFirestore, collection, addDoc, onSnapshot } from "firebase/firestore";
+
+// const firebaseConfig = {
+//     apiKey: "your-api-key",
+//     authDomain: "your-auth-domain",
+//     projectId: "your-project-id",
+//     storageBucket: "your-storage-bucket",
+//     messagingSenderId: "your-messaging-sender-id",
+//     appId: "your-app-id"
+// };
+
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+// const db = getFirestore(app);
 
 // Function to Update Budget Overview
 function updateBudget() {
     totalIncome = transactions.filter(t => t.type === "income").reduce((acc, t) => acc + t.amount, 0);
     totalExpenses = transactions.filter(t => t.type === "expense").reduce((acc, t) => acc + t.amount, 0);
-    let balance = totalIncome - totalExpenses;
+    const balance = totalIncome - totalExpenses;
 
-    balanceEl.textContent = `$${balance}`;
-    incomeEl.textContent = `$${totalIncome}`;
-    expensesEl.textContent = `-$${totalExpenses}`;
+    balanceEl.textContent = `$${balance.toFixed(2)}`;
+    incomeEl.textContent = `$${totalIncome.toFixed(2)}`;
+    expensesEl.textContent = `-$${totalExpenses.toFixed(2)}`;
 
     updateChart(); // Refresh chart when updating budget
 }
@@ -46,10 +65,10 @@ function addTransaction(type, title, amount) {
         alert("Please enter a valid title and amount.");
         return;
     }
-    
-    let transaction = { type, title, amount: parseFloat(amount) };
+
+    const transaction = { type, title, amount: parseFloat(amount) };
     transactions.push(transaction);
-    
+
     if (type === "expense") {
         expenseCategories[title] = (expenseCategories[title] || 0) + transaction.amount;
     }
@@ -62,12 +81,12 @@ function addTransaction(type, title, amount) {
 function renderTransactions() {
     incomeList.innerHTML = "";
     expensesList.innerHTML = "";
-    
+
     transactions.forEach((transaction, index) => {
-        let listItem = document.createElement('li');
-        listItem.innerHTML = `${transaction.title}: $${transaction.amount} 
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `${transaction.title}: $${transaction.amount.toFixed(2)} 
             <button onclick="removeTransaction(${index})">X</button>`;
-        
+
         if (transaction.type === "income") {
             incomeList.appendChild(listItem);
         } else {
@@ -78,7 +97,7 @@ function renderTransactions() {
 
 // Function to Remove a Transaction
 function removeTransaction(index) {
-    let removedTransaction = transactions.splice(index, 1)[0];
+    const removedTransaction = transactions.splice(index, 1)[0];
 
     if (removedTransaction.type === "expense") {
         expenseCategories[removedTransaction.title] -= removedTransaction.amount;
@@ -104,32 +123,52 @@ btnExpenses.addEventListener("click", () => {
     expensesAmount.value = "";
 });
 
-// Signup Functionality (Update this with Firebase Authentication if needed)
-signupBtn.addEventListener("click", () => {
-    if (signupEmail.value && signupPassword.value) {
-        alert("Account created successfully! (Connect with Firebase for real auth)");
-    } else {
+// Signup Functionality (Integrate with Firebase)
+signupBtn.addEventListener("click", async () => {
+    const email = signupEmail.value;
+    const password = signupPassword.value;
+
+    if (!email || !password) {
         alert("Please enter a valid email and password.");
+        return;
     }
+
+    // Example Firebase signup
+    // try {
+    //     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    //     alert("Account created successfully!");
+    // } catch (error) {
+    //     alert(`Error: ${error.message}`);
+    // }
 });
 
-// Login Functionality (Update this with Firebase Authentication if needed)
-loginBtn.addEventListener("click", () => {
-    if (loginEmail.value && loginPassword.value) {
-        alert("Welcome back! (Connect with Firebase for real auth)");
-    } else {
+// Login Functionality (Integrate with Firebase)
+loginBtn.addEventListener("click", async () => {
+    const email = loginEmail.value;
+    const password = loginPassword.value;
+
+    if (!email || !password) {
         alert("Please enter a valid email and password.");
+        return;
     }
+
+    // Example Firebase login
+    // try {
+    //     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    //     alert("Welcome back!");
+    // } catch (error) {
+    //     alert(`Error: ${error.message}`);
+    // }
 });
 
 // Function to Update Chart
 function updateChart() {
-    let ctx = chatChart.getContext('2d');
-    if (window.expenseChart) {
-        window.expenseChart.destroy();
+    const ctx = chatChart.getContext('2d');
+    if (expenseChart) {
+        expenseChart.destroy();
     }
 
-    window.expenseChart = new Chart(ctx, {
+    expenseChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: Object.keys(expenseCategories),
@@ -161,19 +200,27 @@ chatBtn.addEventListener("click", () => {
         chatResponse.textContent = "Please type a question.";
         return;
     }
-    
+
     if (userQuery.includes("biggest expense")) {
         if (Object.keys(expenseCategories).length === 0) {
             chatResponse.textContent = "You have no recorded expenses.";
         } else {
-            let maxCategory = Object.keys(expenseCategories).reduce((a, b) => expenseCategories[a] > expenseCategories[b] ? a : b);
-            chatResponse.textContent = `Your biggest expense is on ${maxCategory} with $${expenseCategories[maxCategory]}.`;
+            const maxCategory = Object.keys(expenseCategories).reduce((a, b) => expenseCategories[a] > expenseCategories[b] ? a : b);
+            chatResponse.textContent = `Your biggest expense is on ${maxCategory} with $${expenseCategories[maxCategory].toFixed(2)}.`;
         }
     } else if (userQuery.includes("total expenses")) {
-        chatResponse.textContent = `Your total expenses so far are $${totalExpenses}.`;
+        chatResponse.textContent = `Your total expenses so far are $${totalExpenses.toFixed(2)}.`;
     } else {
         chatResponse.textContent = "I'm here to assist you with your budget. Try asking about your biggest expense or total expenses!";
     }
 
     chatInput.value = "";
 });
+
+// Initialize the app
+function init() {
+    updateBudget();
+    renderTransactions();
+}
+
+init();
