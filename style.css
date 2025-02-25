@@ -118,6 +118,15 @@ footer {
     bottom: 0;
     width: 100%;
 }
+#chatbot-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 400px;
+    display: none; /* Initially hidden */
+  }
 
 /* Responsive Design */
 @media (max-width: 768px) {

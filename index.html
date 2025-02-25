@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Include Chart.js for the expense chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Include html2canvas for capturing the chart as an image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Firebase and app scripts -->
     <script type="module" src="firebase.js"></script>
     <script type="module" src="script.js"></script>
 </head>
+
 <body>
     <header>
         <h1>Budget Tracker</h1>
@@ -21,15 +29,15 @@
         <section id="authentication">
             <article id="signup">
                 <h2>Sign Up</h2>
-                <input type="email" id="signup-email" placeholder="Enter your email">
-                <input type="password" id="signup-password" placeholder="Create a password">
+                <input type="email" id="signup-email" placeholder="Enter your email" aria-label="Email">
+                <input type="password" id="signup-password" placeholder="Create a password" aria-label="Password">
                 <button id="signup-btn">Sign Up</button>
             </article>
 
             <article id="login">
                 <h2>Login</h2>
-                <input type="email" id="login-email" placeholder="Enter your email">
-                <input type="password" id="login-password" placeholder="Enter your password">
+                <input type="email" id="login-email" placeholder="Enter your email" aria-label="Email">
+                <input type="password" id="login-password" placeholder="Enter your password" aria-label="Password">
                 <button id="login-btn">Login</button>
             </article>
         </section>
@@ -47,13 +55,13 @@
         <!-- Add Transactions -->
         <section id="add-transactions">
             <h2>Add Income</h2>
-            <input type="text" id="income-text" placeholder="Income source (e.g., Salary)">
-            <input type="number" id="income-amount" placeholder="Amount (e.g., 1000)">
+            <input type="text" id="income-text" placeholder="Income source (e.g., Salary)" aria-label="Income Title">
+            <input type="number" id="income-amount" placeholder="Amount (e.g., 1000)" aria-label="Income Amount">
             <button id="btn-income">Add Income</button>
 
             <h2>Add Expense</h2>
-            <input type="text" id="expenses-text" placeholder="Expense category (e.g., Groceries)">
-            <input type="number" id="expenses-amount" placeholder="Amount (e.g., 50)">
+            <input type="text" id="expenses-text" placeholder="Expense category (e.g., Groceries)" aria-label="Expense Title">
+            <input type="number" id="expenses-amount" placeholder="Amount (e.g., 50)" aria-label="Expense Amount">
             <button id="btn-expenses">Add Expense</button>
         </section>
 
@@ -71,22 +79,24 @@
         <!-- Analytics -->
         <section id="analytics">
             <h2>Expense Breakdown</h2>
-            <canvas id="expenses-chart"></canvas>
+            <canvas id="expenses-chart" aria-label="Expense Breakdown Chart"></canvas>
         </section>
 
         <!-- Additional Features -->
         <section id="features">
             <h2>Additional Features</h2>
-            <button id="pdf-btn">Download Report</button>
-            <button id="chatbot-btn">AI Chatbot</button>
+            <button id="pdf-btn" aria-label="Download Report">Download Report</button>
+            <button id="chatbot-btn" aria-label="Open Chatbot">AI Chatbot</button>
 
+            <!-- Chatbox Container -->
             <div id="chatbot-container">
                 <h3>Chatbot</h3>
                 <div id="chatbox">
                     <p id="chat-response">Ask me anything!</p>
                 </div>
-                <input type="text" id="chat-input" placeholder="Type your question...">
+                <input type="text" id="chat-input" placeholder="Type your question..." aria-label="Chat Input">
                 <button id="send-chat">Send</button>
+                <p id="loading-indicator" style="display: none;">Thinking...</p>
             </div>
         </section>
     </main>
@@ -95,4 +105,5 @@
         <p>&copy; 2025 Budget Tracker. All rights reserved.</p>
     </footer>
 </body>
+
 </html>
